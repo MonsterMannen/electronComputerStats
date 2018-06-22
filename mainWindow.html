@@ -1,0 +1,183 @@
+<html>
+<head>
+    <title>Computer Stats >:D</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+    <style>
+        body {
+            background: #313440;
+            color: #DEE2F7;
+            font-family: 'Ubuntu Mono', monospace;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        h2 {
+            color: #EDDC96;
+        }
+
+        #all {
+            padding: 20px;
+            visibility: hidden;
+        }
+
+        #title-bar {
+            -webkit-app-region: drag;
+            height: 24px; 
+            background-color: #262831;
+            padding: none;
+            margin: 0px; 
+        }
+
+        #title {
+            position: fixed;
+            top: 4px;
+            left: 6px; 
+        }
+
+        #title-bar-btns {
+            -webkit-app-region: no-drag;
+            position: fixed;
+            top: 2px;
+            right: 6px;
+        }
+
+        .button {
+            background-color: transparent;
+            border: none;
+            color: #9EA2B7;
+            padding: 2px 7px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px 1px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            color: #FFFFFF;
+        }
+
+        .loader {
+            border: 16px solid #363945;
+            border-radius: 50%;
+            border-top: 16px solid #E19EF5;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+            display: block;
+            position: fixed;
+            top: 100px;
+            left: 37%;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    
+    </style>
+</head>
+<body>
+    <div id="title-bar">
+        <div id="title">Computer Stats</div>
+        <div id="title-bar-btns">
+                <button class="button" id="min-btn">-</button>
+                <button class="button" id="close-btn">x</button>
+        </div>
+    </div>
+
+    <div class="loader"></div>
+
+    <div id="all">
+
+        <h2>General</h2>
+        <div id="general">
+            empty
+        </div>
+
+        <h2>User</h2>
+        <div id="user">
+            empty
+        </div>
+
+        <h2>OS</h2>
+        <div id="os">
+            empty
+        </div>
+
+        <h2>CPU</h2>
+        <div id="cpu">
+            empty
+        </div>
+
+        <h2>Memory</h2>
+        <div id="memory">
+            empty
+        </div>
+
+    </div>
+
+    <script>
+        const os = require('os');
+        const remote = require('electron').remote 
+
+        // removed network stats, maybe fix later
+
+        var general = `
+            Hostname: ${os.hostname()} <br>
+            Uptime: ${~~os.uptime()} seconds (wtf?) <br>
+        `;
+
+        var user = `
+            Username: ${os.userInfo().username} <br>
+            Home dir: ${os.userInfo().homedir} <br>
+            Shell: ${os.userInfo().shell} <br>
+        `;
+
+        var osStats = `
+            Platform: ${os.platform()} <br>
+            Architecture: ${os.arch()} <br>
+            Release: ${os.release()} <br>
+        `;
+
+        var cpu = `
+            Cpu name: ${os.cpus()[0].model} <br>
+            Cpu cores: ${os.cpus().length} <br>
+            Cpu speed: ${os.cpus()[0].speed} <br>
+        `;
+
+        var mem = `
+            Total memory: ${~~(os.totalmem()/(1024*1024))}MB <br>
+            Free memory: ${~~(os.freemem()/(1024*1024))}MB <br>
+        `;
+
+        // set text
+        document.querySelector("#general").innerHTML = general;
+        document.querySelector("#user").innerHTML = user;
+        document.querySelector("#os").innerHTML = osStats;
+        document.querySelector("#cpu").innerHTML = cpu;
+        document.querySelector("#memory").innerHTML = mem;
+
+        // event listeners for titlebar buttons
+        document.getElementById("min-btn").addEventListener("click", function (e) {
+            var w = remote.getCurrentWindow();
+            w.minimize(); 
+        });
+
+        document.getElementById("close-btn").addEventListener("click", function (e) {
+            var w = remote.getCurrentWindow();
+            w.close();
+        });
+
+        // show loading spinner for 2 sec at start. useful.
+        setTimeout(function(){
+            document.querySelector(".loader").style.display = "none";
+            document.querySelector("#all").style.visibility = "visible";
+        }, 2000);
+        
+    </script>
+</body>
+</html>
